@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vincular Idoso - Agelees</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='responsavel.css') }}">
+</head>
+<body>
+  <div class="bg-shape bg-shape-1"></div>
+  <div class="bg-shape bg-shape-2"></div>
+
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">❤</div>
+        <span class="brand-name">Agelees</span>
+      </div>
+      <a href="{{ url_for('dashboard_responsavel') }}" class="topbar-link">← Voltar ao painel</a>
+    </header>
+
+    <main class="main main-center">
+      <div class="vincular-card">
+        <div class="vincular-icon">🔗</div>
+        <h1 class="titulo">Vincular um idoso</h1>
+        <p class="subtitulo">Digite o código que o idoso recebeu ao se cadastrar no Agelees.</p>
+
+        <div id="feedback" class="feedback-msg"></div>
+
+        <div class="vincular-form">
+          <div class="codigo-wrap">
+            <input
+              type="text"
+              id="codigo-input"
+              class="codigo-input"
+              placeholder="Ex: AG-123456"
+              maxlength="10"
+              autocomplete="off"
+              autocapitalize="characters"
+            >
+          </div>
+
+          <!-- Preview do idoso encontrado -->
+          <div id="preview-idoso" class="preview-idoso hidden">
+            <div class="preview-avatar" id="preview-avatar"></div>
+            <div class="preview-info">
+              <strong id="preview-nome"></strong>
+              <span id="preview-email"></span>
+            </div>
+            <div class="preview-check">✓</div>
+          </div>
+
+          <button class="btn-buscar" id="btn-buscar" onclick="buscarIdoso()">
+            Buscar idoso
+          </button>
+
+          <button class="btn-confirmar-vinculo hidden" id="btn-vincular" onclick="confirmarVinculo()">
+            ✓ Confirmar vínculo
+          </button>
+        </div>
+
+        <div class="dica">
+          <span class="dica-icon">💡</span>
+          O código do idoso pode ser encontrado no perfil dele, na tela inicial após o login.
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='responsavel.js') }}"></script>
+</body>
+</html>

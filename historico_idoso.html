@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histórico - Agelees</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='responsavel.css') }}">
+</head>
+<body>
+  <div class="bg-shape bg-shape-1"></div>
+  <div class="bg-shape bg-shape-2"></div>
+
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">❤</div>
+        <span class="brand-name">Agelees</span>
+      </div>
+      <a href="{{ url_for('dashboard_responsavel') }}" class="topbar-link">← Voltar ao painel</a>
+    </header>
+
+    <main class="main">
+      <div class="section-header">
+        <div>
+          <p class="section-label">Histórico emocional</p>
+          <h1 class="titulo">{{ idoso.nome }}</h1>
+        </div>
+        <div class="avatar avatar-lg">{{ idoso.nome[0] | upper }}</div>
+      </div>
+
+      <!-- Resumo do período -->
+      <div class="resumo-grid">
+        <div class="resumo-card">
+          <span class="resumo-emoji">😊</span>
+          <span class="resumo-valor">{{ contagem.Feliz or 0 }}</span>
+          <span class="resumo-label">Feliz</span>
+        </div>
+        <div class="resumo-card">
+          <span class="resumo-emoji">🙂</span>
+          <span class="resumo-valor">{{ contagem.Normal or 0 }}</span>
+          <span class="resumo-label">Normal</span>
+        </div>
+        <div class="resumo-card">
+          <span class="resumo-emoji">🥺</span>
+          <span class="resumo-valor">{{ contagem.Triste or 0 }}</span>
+          <span class="resumo-label">Triste</span>
+        </div>
+        <div class="resumo-card">
+          <span class="resumo-emoji">😤</span>
+          <span class="resumo-valor">{{ contagem.Raiva or 0 }}</span>
+          <span class="resumo-label">Com raiva</span>
+        </div>
+      </div>
+
+      <!-- Lista de entradas -->
+      <div class="historico-lista">
+        <div class="historico-lista-header">
+          <span>Registros recentes</span>
+          <span>{{ historico | length }} no total</span>
+        </div>
+
+        {% if historico %}
+          {% for entrada in historico | reverse %}
+          <div class="historico-entrada emocao-borda-{{ entrada.emocao | lower }}">
+            <div class="entrada-emoji">{{ emocao_emoji(entrada.emocao) }}</div>
+            <div class="entrada-info">
+              <strong class="entrada-emocao">{{ entrada.emocao }}</strong>
+              <span class="entrada-msg">{{ entrada.mensagem }}</span>
+            </div>
+            <div class="entrada-hora">{{ entrada.hora }}</div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state" style="padding: 40px 0;">
+            <div class="empty-icon">📋</div>
+            <p class="empty-sub">Nenhuma análise registrada ainda.</p>
+          </div>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+</body>
+</html>

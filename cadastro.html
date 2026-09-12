@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - Agelees</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='cad.css') }}">
+</head>
+<body>
+  <div class="bg-shape bg-shape-1"></div>
+  <div class="bg-shape bg-shape-2"></div>
+
+  <div class="wrapper">
+    <div class="card">
+      <div class="card-header">
+        <div class="brand">
+          <div class="brand-icon">❤</div>
+          <span class="brand-name">Agelees</span>
+        </div>
+        <h1 class="titulo">Criar nova conta</h1>
+        <p class="subtitulo">Preencha os dados abaixo para começar</p>
+      </div>
+
+      <div id="message" class="message"></div>
+
+      <form id="form-cadastro" class="form">
+        <div class="input-wrap">
+          <label for="nome">Nome completo</label>
+          <input type="text" id="nome" placeholder="Como podemos te chamar?" required>
+        </div>
+
+        <div class="input-wrap">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="seu@email.com" required>
+        </div>
+
+        <div class="input-wrap">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" placeholder="••••••••" required>
+        </div>
+
+        <div class="input-wrap">
+          <label for="confirmar_senha">Confirmar senha</label>
+          <input type="password" id="confirmar_senha" placeholder="••••••••" required>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="btn-cadastrar">Criar conta</button>
+      </form>
+
+      <a href="{{ url_for('login') }}" class="btn btn-ghost">← Voltar ao login</a>
+    </div>
+  </div>
+
+  <script>
+    // Atualiza o tipo conforme a URL e o link de voltar
+    const params = new URLSearchParams(window.location.search);
+    const tipo = params.get('tipo') || 'Idoso';
+    
+    // Atualizar link de voltar com o tipo
+    const linkVoltar = document.querySelector('.btn-ghost');
+    if (linkVoltar) {
+      linkVoltar.href = `/login?tipo=${tipo}`;
+    }
+  </script>
+  <script src="{{ url_for('static', filename='cad.js') }}"></script>
+</body>
+</html>

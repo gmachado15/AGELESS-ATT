@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Agelees</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+  <div class="bg-shape bg-shape-1"></div>
+  <div class="bg-shape bg-shape-2"></div>
+
+  <div class="wrapper">
+    <div class="card">
+      <div class="card-header">
+        <div class="brand">
+          <div class="brand-icon">❤</div>
+          <span class="brand-name">Agelees</span>
+        </div>
+        <h1 class="titulo">Bem-vindo de volta</h1>
+        <p class="subtitulo">Entrando como <strong id="subtitulo-tipo">Idoso</strong></p>
+      </div>
+
+      <form action="{{ url_for('login') }}" method="POST" class="form">
+        <div class="input-wrap">
+          <label for="email">E-mail</label>
+          <input type="email" name="email" id="email" placeholder="seu@email.com" required>
+        </div>
+
+        <div class="input-wrap">
+          <label for="senha">Senha</label>
+          <input type="password" name="senha" id="senha" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" id="btn-entrar" class="btn btn-primary">Entrar</button>
+      </form>
+
+      <div class="divider"><span>ou</span></div>
+
+      <a id="link-cadastro" href="{{ url_for('cadastro') }}" class="btn btn-success">Criar nova conta</a>
+
+      <a href="{{ url_for('index') }}" class="btn btn-ghost">← Voltar</a>
+    </div>
+  </div>
+
+  <script>
+    // Atualiza subtítulo e link de cadastro conforme o tipo na URL
+    const _params = new URLSearchParams(window.location.search);
+    const _tipo = _params.get('tipo') || 'Idoso';
+    const _subtitulo = document.getElementById('subtitulo-tipo');
+    const _linkCadastro = document.getElementById('link-cadastro');
+    if (_subtitulo) _subtitulo.textContent = _tipo;
+    if (_linkCadastro) _linkCadastro.href = `/cadastro?tipo=${_tipo}`;
+  </script>
+  <script src="{{ url_for('static', filename='login.js') }}"></script>
+</body>
+</html>

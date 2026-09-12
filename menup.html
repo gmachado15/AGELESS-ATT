@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agelees</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='menu.css') }}">
+</head>
+<body>
+  <div class="bg-shape bg-shape-1"></div>
+  <div class="bg-shape bg-shape-2"></div>
+
+  <div class="container">
+    <div class="brand">
+      <div class="brand-icon">❤</div>
+      <h1 class="titulo">Agelees</h1>
+    </div>
+    <p class="subtitulo">Seu companheiro de cuidados<br>e bem-estar</p>
+
+    <div class="cards">
+      <a href="{{ url_for('login', tipo='Idoso') }}" class="card" id="btn-idoso">
+        <div class="card-icon">🧓</div>
+        <div class="card-text">
+          <strong>Sou Idoso</strong>
+          <span>Acesse seu perfil e acompanhamento</span>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a href="{{ url_for('login', tipo='Responsavel') }}" class="card" id="btn-responsavel">
+        <div class="card-icon">👨‍👩‍👦</div>
+        <div class="card-text">
+          <strong>Sou Responsável</strong>
+          <span>Gerencie e acompanhe quem você ama</span>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="footer">
+      Feito com carinho para quem amamos
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='menu.js') }}"></script>
+</body>
+</html>

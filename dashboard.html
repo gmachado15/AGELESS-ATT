@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análise Facial - Agelees</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="bg-shape bg-shape-1"></div>
+  <div class="bg-shape bg-shape-2"></div>
+
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">❤</div>
+        <span class="brand-name">Agelees</span>
+      </div>
+      <a href="{{ url_for('index') }}" class="topbar-link">← Início</a>
+    </header>
+
+    <main class="main">
+      <div class="content-card">
+        <div class="section-label">Bem-estar emocional</div>
+        <h1 class="titulo">Verificação de Expressão</h1>
+        <p class="subtitulo">Toque em "Ligar câmera" e depois em "Analisar"<br>para identificarmos como você está se sentindo.</p>
+
+        <div class="video-wrap" id="video-wrap">
+          <div class="camera-placeholder" id="camera-placeholder">
+            <div class="placeholder-icon">📷</div>
+            <p class="placeholder-texto">Toque para ligar a câmera</p>
+          </div>
+          <video id="video" autoplay playsinline muted style="display:none;"></video>
+          <canvas id="canvas" style="display:none;"></canvas>
+          <div class="video-overlay" id="scanning-overlay">
+            <div class="scan-line"></div>
+          </div>
+        </div>
+
+        <button class="btn-analisar" id="btn-camera" onclick="ligarCamera()">
+          <span class="btn-icon">📷</span>
+          Ligar câmera
+        </button>
+
+        <button class="btn-analisar" id="btn-capturar" onclick="capturar()" style="display:none;">
+          <span class="btn-icon">◉</span>
+          Analisar agora
+        </button>
+      </div>
+
+      <div class="resultado-card" id="resultado-card">
+        <div class="resultado-emoji" id="resultado-emoji">🙂</div>
+        <p class="resultado-texto" id="resultado">Pronto para começar</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const video      = document.getElementById('video');
+    const canvas     = document.getElementById('canvas');
+    const resultText = document.getElementById('resultado');
+    const resultEmoji = document.getElementById('resultado-emoji');
+    const resultCard  = document.getElementById('resultado-card');
+    const overlay     = document.getElementById('scanning-overlay');
+    const placeholder = document.getElementById('camera-placeholder');
+    const btnCamera   = document.getElementById('btn-camera');
+    const btnCapturar = document.getElementById('btn-capturar');
+
+    let stream = null;
+
+    async function ligarCamera() {
+      try {
+        btnCamera.disabled = true;
+        btnCamera.innerHTML = '<span class="btn-icon">⏳</span> Ligando...';
+
+        // Verifica se a API existe
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error('API de câmera não suportada neste dispositivo');
+        }
+
+        const constraints = {
+          video: {
+            facingMode: { ideal: 'user' },
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+          },
+          audio: false
+        };
+
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+        video.srcObject = stream;
+        video.setAttribute('playsinline', true);
+        video.muted = true;
+        video.style.display = 'block';
+        placeholder.style.display = 'none';
+
+        // Espera o vídeo carregar
+        await video.play();
+
+        btnCamera.style.display = 'none';
+        btnCapturar.style.display = 'inline-flex';
+
+        resultText.innerText = 'Câmera ligada! Clique em Analisar.';
+        resultEmoji.innerText = '📷';
+
+      } catch (err) {
+        console.error('Erro detalhado da câmera:', err.name, err.message);
+
+        btnCamera.disabled = false;
+        btnCamera.innerHTML = '<span class="btn-icon">📷</span> Ligar câmera';
+        resultEmoji.innerText = '❌';
+
+        let msg = 'Não foi possível acessar a câmera.';
+
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          msg = 'Permissão da câmera negada. Ative nas configurações do aplicativo.';
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+          msg = 'Nenhuma câmera encontrada no dispositivo.';
+        } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+          msg = 'A câmera está sendo usada por outro aplicativo.';
+        } else if (err.name === 'OverconstrainedError') {
+          msg = 'Não foi possível usar as configurações de câmera solicitadas.';
+        } else if (err.name === 'SecurityError') {
+          msg = 'Acesso à câmera bloqueado por segurança (use HTTPS).';
+        }
+
+        resultText.innerText = msg;
+      }
+    }
+
+    const emocaoMap = {
+      'Feliz':   { msg: 'Que bom te ver feliz! Continue assim!',              emoji: '😊' },
+      'Triste':  { msg: 'Sinto que as coisas estão difíceis. Quer conversar?', emoji: '🥺' },
+      'Bravo':   { msg: 'Respire fundo... O que está te incomodando?',        emoji: '😤' },
+      'Neutro':  { msg: 'Você parece focado hoje. No que está pensando?',     emoji: '🙂' },
+    };
+
+    async function capturar() {
+      if (!video.srcObject) {
+        resultText.innerText = 'Ligue a câmera primeiro!';
+        return;
+      }
+
+      overlay.classList.add('active');
+      resultText.innerText = 'Analisando...';
+      resultEmoji.innerText = '🔍';
+      btnCapturar.disabled = true;
+
+      // Capturar frame
+      const ctx = canvas.getContext('2d');
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      ctx.drawImage(video, 0, 0);
+      const imagemBase64 = canvas.toDataURL('image/jpeg', 0.8);
+
+      try {
+        const response = await fetch('/analisar_expressao', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: imagemBase64 })
+        });
+        
+        const data = await response.json();
+        console.log('Resposta:', data);
+        
+        const info = emocaoMap[data.emocao] || { msg: 'Análise concluída', emoji: '👀' };
+
+        overlay.classList.remove('active');
+        resultEmoji.innerText = info.emoji;
+        resultText.innerText = info.msg;
+        resultCard.classList.add('has-result');
+      } catch (err) {
+        console.error('Erro:', err);
+        overlay.classList.remove('active');
+        resultText.innerText = 'Erro ao conectar com o servidor.';
+      } finally {
+        btnCapturar.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
